@@ -43,17 +43,20 @@ char	*find_cmd_path(t_pipex *ppx, char **envp)
 void	process_heredoc(t_pipex *ppx, char **av)
 {
 	char	*line;
+	size_t	delimiter_len;
 
+	delimiter_len = 0;
 	if (pipe(ppx->heredoc_fd) == -1)
 		b_error_msg(ERR_PIPE, 1);
 	while (1)
 	{
-		write(1, "heredoc>", 9);
+		write(1, "heredoc>", 10);
 		line = get_next_line(0);
 		if (!line)
 			break ;
-		if (!ft_strncmp(line, av[2], ft_strlen(av[2]))
-			&& line[ft_strlen(av[2])] == '\n')
+		if (ft_strlen(line) == delimiter_len + 1 && 
+            line[delimiter_len] == '\n' &&
+            !ft_strncmp(line, av[2], delimiter_len))
 		{
 			free(line);
 			break ;
@@ -75,7 +78,7 @@ void	child_dup(t_pipex *ppx, int i)
 	}
 	else if (i == 0 && ppx->heredoc_mode == 1)
 	{
-		if (dup2(ppx->pipe_fd[0], 0) == 1)
+		if (dup2(ppx->pipe_fd[0], 0) == -1)
 			b_error_msg(ERR_DUP, 1);
 	}
 	if (i == ppx->cmd_count - 1)
