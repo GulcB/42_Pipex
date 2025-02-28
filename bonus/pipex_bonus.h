@@ -18,7 +18,6 @@
 # include <stdlib.h>
 # include <stdio.h>
 # include <sys/wait.h>
-# include "../libft/libft.h"
 # include "../gnl/get_next_line.h"
 
 # define ERR_ARG "Invalid number of arguments\n"
@@ -47,12 +46,20 @@ typedef struct s_pipex
 void	b_child_process(t_pipex *ppx, char **av, char **envp, int i);
 void	b_parent_process(t_pipex *ppx);
 void	*create_fork_process(t_pipex *ppx, char **av, char **evp, int i);
+void	setup_files(t_pipex *ppx, char **av, int ac);
 void	init_pipeline(t_pipex *ppx, char **av, int ac);
 char	*find_cmd_path(t_pipex *ppx, char **envp);
 void	process_heredoc(t_pipex *ppx, char **av);
-void	child_dup(t_pipex *ppx, int i);
+void	b_setup_cmd_exec(t_pipex *ppx, char **av, char **env, int cmd_i);
+void	process_heredoc_input(t_pipex *ppx, char **av, size_t delimiter_len);
 void	b_error_msg(char *err_msg, int exit_code);
 void	free_list(t_pipex *ppx);
+void	ft_free_fullpath(t_pipex *ppx);
 void	ft_free(char **del);
+void	ft_putstr_fd(char *s, int fd);
+char	**ft_split(char const *s, char c);
+int		ft_strncmp(const char *s1, const char *s2, size_t n);
+
+void debug_print(char *msg);
 
 #endif

@@ -1,7 +1,5 @@
 gulcin
 alp
-fatih
-baha
-yener
-ahmet
-ali
+test
+hello
+world

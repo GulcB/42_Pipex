@@ -45,20 +45,43 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	char	*str;
 	size_t	i;
 	size_t	j;
-	size_t	a;
+	size_t	s1_len;
 
-	if (!s1 || !s2)
+	if (!s2)
 		return (NULL);
-	str = (char *)malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	s1_len = ft_strlen(s1);
+	str = (char *)malloc(sizeof(char) * (s1_len + ft_strlen(s2) + 1));
 	if (!str)
 		return (NULL);
 	i = 0;
+	while (i < s1_len)
+	{
+		str[i] = s1[i];
+		i++;
+	}
 	j = 0;
-	a = 0;
-	while (s1[i])
-		str[a++] = s1[i++];
 	while (s2[j])
-		str[a++] = s2[j++];
-	str[a] = '\0';
+		str[i++] = s2[j++];
+	str[i] = '\0';
 	return (str);
+}
+
+char	*ft_strdup(const char *s)
+{
+	char	*dup;
+	size_t	len;
+	size_t	i;
+
+	len = ft_strlen(s);
+	dup = (char *)malloc(sizeof(char) * (len + 1));
+	if (!dup)
+		return (NULL);
+	i = 0;
+	while (i < len)
+	{
+		dup[i] = s[i];
+		i++;
+	}
+	dup[i] = '\0';
+	return (dup);
 }

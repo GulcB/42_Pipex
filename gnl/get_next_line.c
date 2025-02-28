@@ -15,21 +15,34 @@
 char	*ft_read_file(int fd, char *keep)
 {
 	char	*temp;
+	char	*joined;
 	int		rd;
 
 	temp = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!temp)
 		return (NULL);
 	rd = 1;
-	while (!ft_strchr(keep, '\n') && rd != 0)
+	while ((!keep || !ft_strchr(keep, '\n')) && rd != 0)
 	{
 		rd = read(fd, temp, BUFFER_SIZE);
 		if (rd == -1)
-			return (free(temp), free(keep), NULL);
+			return (ft_handle_error(temp, keep));
 		temp[rd] = '\0';
-		keep = ft_strjoin(keep, temp);
+		if (!keep)
+			keep = ft_strdup("");
+		joined = ft_strjoin(keep, temp);
+		free(keep);
+		keep = joined;
 	}
 	return (free(temp), keep);
+}
+
+char	*ft_handle_error(char *temp, char *keep)
+{
+	free(temp);
+	if (keep)
+		free(keep);
+	return (NULL);
 }
 
 char	*ft_extract_line(char *keep)
@@ -78,7 +91,7 @@ char	*ft_delete_read(char *keep)
 	i++;
 	while (keep[i + j] != '\0')
 	{
-		rtn[j] = keep[j + i];
+		rtn[j] = keep[i + j];
 		j++;
 	}
 	rtn[j] = '\0';

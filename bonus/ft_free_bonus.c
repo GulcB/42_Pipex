@@ -23,14 +23,39 @@ void	free_list(t_pipex *ppx)
 	int	i;
 
 	i = 0;
-	while (ppx->cmd && ppx->cmd[i])
-		free(ppx->cmd[i++]);
-	free(ppx->cmd);
-	i = 0;
 	if (ppx->cmd_path)
+	{
+		while (i < ppx->cmd_count * 2 && ppx->cmd_path[i])
+		{
+			free(ppx->cmd_path[i]);
+			i++;
+		}
 		free(ppx->cmd_path);
+		ppx->cmd_path = NULL;
+	}
+	i = 0;
+	if (ppx->cmd)
+	{
+		while (ppx->cmd[i])
+			free(ppx->cmd[i++]);
+		free(ppx->cmd);
+		ppx->cmd = NULL;
+	}
+	ft_free_fullpath(ppx);
+}
+
+void	ft_free_fullpath(t_pipex *ppx)
+{
+	int	i;
+
+	i = 0;
 	if (ppx->full_path)
+	{
+		while (ppx->full_path[i])
+			free(ppx->full_path[i++]);
 		free(ppx->full_path);
+		ppx->full_path = NULL;
+	}
 }
 
 void	ft_free(char **del)
@@ -47,5 +72,4 @@ void	ft_free(char **del)
 		i++;
 	}
 	free(del);
-	del = NULL;
 }
