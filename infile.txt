@@ -1,5 +1,0 @@
-gulcin
-alp
-test
-hello
-world
