@@ -146,12 +146,37 @@ void process_heredoc_input(t_pipex *ppx, char **av, size_t delimiter_len)
 
 void	process_heredoc(t_pipex *ppx, char **av)
 {
+<<<<<<< HEAD
 	size_t	delimiter_len;
 
 	delimiter_len = ft_strlen(av[2]);
 	if (pipe(ppx->heredoc_fd) == -1)
 		b_error_msg(ERR_PIPE, 1);
 	process_heredoc_input(ppx, av, delimiter_len);
+=======
+	char	*line;
+	size_t	delimiter_len;
+
+	delimiter_len = 0;
+	if (pipe(ppx->heredoc_fd) == -1)
+		b_error_msg(ERR_PIPE, 1);
+	while (1)
+	{
+		write(1, "heredoc>", 10);
+		line = get_next_line(0);
+		if (!line)
+			break ;
+		if (ft_strlen(line) == delimiter_len + 1 && 
+            line[delimiter_len] == '\n' &&
+            !ft_strncmp(line, av[2], delimiter_len))
+		{
+			free(line);
+			break ;
+		}
+		write(ppx->heredoc_fd[1], line, ft_strlen(line));
+		free(line);
+	}
+>>>>>>> be6e12660cb3e3354e8eb35fc6694df14ecd7b62
 	close(ppx->heredoc_fd[1]);
 	if (dup2(ppx->heredoc_fd[0], 0) == -1)
 		b_error_msg(ERR_DUP, 1);
@@ -162,10 +187,25 @@ void	setup_files(t_pipex *ppx, char **av, int ac)
 {
 	if (ppx->heredoc_mode)
 	{
+<<<<<<< HEAD
 		ppx->fd1 = open(av[ac - 1], O_CREAT | O_WRONLY | O_APPEND, 0644);
 		if (ppx->fd1 < 0)
 			b_error_msg(ERR_OUTFILE, 1);
 		process_heredoc(ppx, av);
+=======
+		if (dup2(ppx->fd0, 0) == -1)
+			b_error_msg(ERR_DUP, 1);
+	}
+	else if (i == 0 && ppx->heredoc_mode == 1)
+	{
+		if (dup2(ppx->pipe_fd[0], 0) == -1)
+			b_error_msg(ERR_DUP, 1);
+	}
+	if (i == ppx->cmd_count - 1)
+	{
+		if (dup2(ppx->fd1, 1) == -1)
+			b_error_msg(ERR_DUP, 1);
+>>>>>>> be6e12660cb3e3354e8eb35fc6694df14ecd7b62
 	}
 	else
 	{
