@@ -6,17 +6,11 @@
 /*   By: gbodur <gbodur@student.42istanbul.com.t    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 17:24:11 by gbodur            #+#    #+#             */
-/*   Updated: 2025/03/01 02:45:53 by gbodur           ###   ########.fr       */
+/*   Updated: 2025/03/01 04:14:42 by gbodur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
-
-void	b_error_msg(char *err_msg, int exit_code)
-{
-	perror(err_msg);
-	exit (exit_code);
-}
 
 void	free_list(t_pipex *ppx)
 {
@@ -84,5 +78,22 @@ void	b_close_pipes(t_pipex *ppx)
 		close(ppx->pipe_fd[i][0]);
 		close(ppx->pipe_fd[i][1]);
 		i++;
+	}
+}
+
+void	b_free_pipes(t_pipex *ppx)
+{
+	int	i;
+
+	i = 0;
+	if (ppx->pipe_fd)
+	{
+		while (i < ppx->cmd_count)
+		{
+			free(ppx->pipe_fd[i]);
+			i++;
+		}
+		free(ppx->pipe_fd);
+		ppx->pipe_fd = NULL;
 	}
 }

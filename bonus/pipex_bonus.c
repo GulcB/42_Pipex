@@ -6,12 +6,21 @@
 /*   By: gbodur <gbodur@student.42istanbul.com.t    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/09 16:28:56 by gbodur            #+#    #+#             */
-/*   Updated: 2025/03/01 03:31:47 by gbodur           ###   ########.fr       */
+/*   Updated: 2025/03/01 04:17:32 by gbodur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
 
+void	b_check_arg(t_pipex *ppx, char **av, int ac)
+{
+	if (ac < 5)
+		b_error_msg(ERR_ARG, 1);
+	if (ft_strncmp(av[1], "here_doc", 8) == 0)
+		ppx->heredoc_mode = 1;
+	if (ac < 6 && ppx->heredoc_mode == 1)
+		b_error_msg(ERR_ARG, 1);
+}
 void	b_child_process(t_pipex *ppx, char **av, char **env, int i)
 {
 	int	cmd_i;
@@ -83,13 +92,9 @@ int	main(int ac, char **av, char **env)
 	ppx.cmd_path = NULL;
     ppx.full_path = NULL;
     ppx.cmd = NULL;
+	ppx.pipe_fd = NULL;
 	ppx.heredoc_mode = 0;
-	if (ac < 5)
-		b_error_msg(ERR_ARG, 1);
-	if (ft_strncmp(av[1], "here_doc", 8) == 0)
-		ppx.heredoc_mode = 1;
-	if (ac < 6 && ppx.heredoc_mode == 1)
-		b_error_msg(ERR_ARG, 1);
+	b_check_arg(&ppx, ac, av);
 	init_pipeline(&ppx, av, ac);
 	i = 2 + ppx.heredoc_mode;
 	while (i < ac - 1)
@@ -101,5 +106,6 @@ int	main(int ac, char **av, char **env)
 	waitpid(ppx.pid, NULL, 0);
 	close(ppx.fd1);
 	free_list(&ppx);
+	b_free_pipes(&ppx);
 	return (0);
 }

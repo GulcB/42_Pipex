@@ -6,7 +6,7 @@
 /*   By: gbodur <gbodur@student.42istanbul.com.t    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/09 16:24:12 by gbodur            #+#    #+#             */
-/*   Updated: 2025/03/01 03:37:12 by gbodur           ###   ########.fr       */
+/*   Updated: 2025/03/01 04:15:33 by gbodur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,14 +51,11 @@ void	init_pipeline(t_pipex *ppx, char **av, int ac);
 char	*find_cmd_path(t_pipex *ppx, char **envp);
 void	process_heredoc(t_pipex *ppx, char **av);
 void	b_setup_cmd_exec(t_pipex *ppx, char **av, char **env, int cmd_i);
-void	process_heredoc_input(t_pipex *ppx, char **av, size_t delimiter_len);
 void	b_error_msg(char *err_msg, int exit_code);
 void	free_list(t_pipex *ppx);
 void	ft_free_fullpath(t_pipex *ppx);
 void	ft_free(char **del);
 void	b_close_pipes(t_pipex *ppx);
-void	ft_putstr_fd(char *s, int fd);
-char	**ft_split(char const *s, char c);
-int		ft_strncmp(const char *s1, const char *s2, size_t n);
+void	b_free_pipes(t_pipex *ppx);
 
 #endif

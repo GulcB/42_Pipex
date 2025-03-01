@@ -6,11 +6,17 @@
 /*   By: gbodur <gbodur@student.42istanbul.com.t    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 17:25:26 by gbodur            #+#    #+#             */
-/*   Updated: 2025/03/01 03:41:53 by gbodur           ###   ########.fr       */
+/*   Updated: 2025/03/01 04:14:49 by gbodur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
+
+void	b_error_msg(char *err_msg, int exit_code)
+{
+	perror(err_msg);
+	exit (exit_code);
+}
 
 char	*find_cmd_path(t_pipex *ppx, char **envp)
 {
@@ -61,11 +67,15 @@ void b_setup_cmd_exec(t_pipex *ppx, char **av, char **env, int cmd_i)
     }
 }
 
-void	process_heredoc_input(t_pipex *ppx, char **av, size_t delimiter_len)
+void	process_heredoc(t_pipex *ppx, char **av)
 {
-    char *line;
+	char	*line;
+	size_t	delimiter_len;
 
-    while (1)
+	delimiter_len = ft_strlen(av[2]);
+	if (pipe(ppx->heredoc_fd) == -1)
+		b_error_msg(ERR_PIPE, 1);
+	while (1)
     {
         write(1, "heredoc>", 9);
         line = get_next_line(0);
@@ -79,16 +89,6 @@ void	process_heredoc_input(t_pipex *ppx, char **av, size_t delimiter_len)
         write(ppx->heredoc_fd[1], line, ft_strlen(line));
         free(line);
     }
-}
-
-void	process_heredoc(t_pipex *ppx, char **av)
-{
-	size_t	delimiter_len;
-
-	delimiter_len = ft_strlen(av[2]);
-	if (pipe(ppx->heredoc_fd) == -1)
-		b_error_msg(ERR_PIPE, 1);
-	process_heredoc_input(ppx, av, delimiter_len);
 	close(ppx->heredoc_fd[1]);
 	if (dup2(ppx->heredoc_fd[0], 0) == -1)
 		b_error_msg(ERR_DUP, 1);
