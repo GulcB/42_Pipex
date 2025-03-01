@@ -6,7 +6,7 @@
 /*   By: gbodur <gbodur@student.42istanbul.com.t    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 17:25:26 by gbodur            #+#    #+#             */
-/*   Updated: 2025/02/25 12:01:44 by gbodur           ###   ########.fr       */
+/*   Updated: 2025/03/01 03:41:53 by gbodur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,108 +40,45 @@ char	*find_cmd_path(t_pipex *ppx, char **envp)
 	return (ft_free(ppx->full_path), ppx->full_path = NULL, NULL);
 }
 
-// void	b_setup_cmd_exec(t_pipex *ppx, char **av, char **env, int cmd_i)
-// {
-// 	ppx->cmd_path[cmd_i] = find_cmd_path(ppx, env);
-// 	if (!ppx->cmd_path[cmd_i])
-// 	{
-// 		ft_putstr_fd(av[cmd_i + 2 + ppx->heredoc_mode], 2);
-// 		b_error_msg(ERR_CMD, 1);
-// 	}
-// 	if (cmd_i == ppx->cmd_count - 1)
-// 	{
-// 		if (dup2(ppx->fd1, 1) == -1)
-// 			b_error_msg(ERR_DUP, 1);
-// 		close(ppx->fd1);
-// 	}
-// 	if (execve(ppx->cmd_path[cmd_i], ppx->cmd, env) == -1)
-// 	{
-// 		free_list(ppx);
-// 		b_error_msg(ERR_EXEC, 1);
-// 	}
-// }
-
 void b_setup_cmd_exec(t_pipex *ppx, char **av, char **env, int cmd_i)
 {
-    debug_print("setup_cmd_exec: finding command path");
     ppx->cmd_path[cmd_i] = find_cmd_path(ppx, env);
     if (!ppx->cmd_path[cmd_i])
     {
-        debug_print("setup_cmd_exec: command not found");
         ft_putstr_fd(av[cmd_i + 2 + ppx->heredoc_mode], 2);
         b_error_msg(ERR_CMD, 1);
-    }
-    debug_print("setup_cmd_exec: command found");
-    
+    }    
     if (cmd_i == ppx->cmd_count - 1)
     {
-        debug_print("setup_cmd_exec: redirecting to output file");
         if (dup2(ppx->fd1, 1) == -1)
             b_error_msg(ERR_DUP, 1);
         close(ppx->fd1);
     }
-    
-    debug_print("setup_cmd_exec: executing command");
-    
-	if (execve(ppx->cmd_path[cmd_i], ppx->cmd, env) == -1)
+    if (execve(ppx->cmd_path[cmd_i], ppx->cmd, env) == -1)
     {
-        debug_print("setup_cmd_exec: execve failed with error");
-        perror("execve error");
         free_list(ppx);
         b_error_msg(ERR_EXEC, 1);
     }
-    // if (execve(ppx->cmd_path[cmd_i], ppx->cmd, env) == -1)
-    // {
-    //     debug_print("setup_cmd_exec: execve failed");
-    //     free_list(ppx);
-    //     b_error_msg(ERR_EXEC, 1);
-    // }
 }
 
-// void	process_heredoc_input(t_pipex *ppx, char **av, size_t delimiter_len)
-// {
-// 	char	*line;
-
-// 	while (1)
-// 	{
-// 		write(1, "heredoc>", 8);
-// 		line = get_next_line(0);
-// 		if (!line)
-// 			break ;
-// 		if (!ft_strncmp(line, av[2], delimiter_len))
-// 		{
-// 			free(line);
-// 			break ;
-// 		}
-// 		write(ppx->heredoc_fd[1], line, ft_strlen(line));
-// 		free(line);
-// 	}
-// }
-
-void process_heredoc_input(t_pipex *ppx, char **av, size_t delimiter_len)
+void	process_heredoc_input(t_pipex *ppx, char **av, size_t delimiter_len)
 {
     char *line;
 
-    debug_print("heredoc_input: started");
     while (1)
     {
-        write(1, "heredoc>", 8);
+        write(1, "heredoc>", 9);
         line = get_next_line(0);
         if (!line)
-        {
-            debug_print("heredoc_input: null line");
             break;
-        }
         if (!ft_strncmp(line, av[2], delimiter_len))
         {
-            debug_print("heredoc_input: found delimiter");
             free(line);
             break;
         }
         write(ppx->heredoc_fd[1], line, ft_strlen(line));
         free(line);
     }
-    debug_print("heredoc_input: completed");
 }
 
 void	process_heredoc(t_pipex *ppx, char **av)

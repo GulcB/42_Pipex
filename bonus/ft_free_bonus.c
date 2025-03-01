@@ -6,7 +6,7 @@
 /*   By: gbodur <gbodur@student.42istanbul.com.t    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 17:24:11 by gbodur            #+#    #+#             */
-/*   Updated: 2025/02/22 13:34:14 by gbodur           ###   ########.fr       */
+/*   Updated: 2025/03/01 02:45:53 by gbodur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,4 +72,17 @@ void	ft_free(char **del)
 		i++;
 	}
 	free(del);
+}
+
+void	b_close_pipes(t_pipex *ppx)
+{
+	int	i;
+
+	i = 0;
+	while (i < ppx->cmd_count)
+	{
+		close(ppx->pipe_fd[i][0]);
+		close(ppx->pipe_fd[i][1]);
+		i++;
+	}
 }

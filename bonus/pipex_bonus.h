@@ -6,7 +6,7 @@
 /*   By: gbodur <gbodur@student.42istanbul.com.t    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/09 16:24:12 by gbodur            #+#    #+#             */
-/*   Updated: 2025/02/22 13:52:53 by gbodur           ###   ########.fr       */
+/*   Updated: 2025/03/01 03:37:12 by gbodur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <stdlib.h>
 # include <stdio.h>
 # include <sys/wait.h>
+# include "../libft/libft.h"
 # include "../gnl/get_next_line.h"
 
 # define ERR_ARG "Invalid number of arguments\n"
@@ -32,7 +33,7 @@
 typedef struct s_pipex
 {
 	pid_t		pid;
-	int			pipe_fd[2];
+	int			**pipe_fd;
 	int			heredoc_fd[2];
 	int			cmd_count;
 	int			fd0;
@@ -44,8 +45,7 @@ typedef struct s_pipex
 }				t_pipex;
 
 void	b_child_process(t_pipex *ppx, char **av, char **envp, int i);
-void	b_parent_process(t_pipex *ppx);
-void	*create_fork_process(t_pipex *ppx, char **av, char **evp, int i);
+void	create_fork_process(t_pipex *ppx, char **av, char **evp, int i);
 void	setup_files(t_pipex *ppx, char **av, int ac);
 void	init_pipeline(t_pipex *ppx, char **av, int ac);
 char	*find_cmd_path(t_pipex *ppx, char **envp);
@@ -56,10 +56,9 @@ void	b_error_msg(char *err_msg, int exit_code);
 void	free_list(t_pipex *ppx);
 void	ft_free_fullpath(t_pipex *ppx);
 void	ft_free(char **del);
+void	b_close_pipes(t_pipex *ppx);
 void	ft_putstr_fd(char *s, int fd);
 char	**ft_split(char const *s, char c);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
-
-void debug_print(char *msg);
 
 #endif
