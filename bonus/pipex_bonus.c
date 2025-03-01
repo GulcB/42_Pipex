@@ -12,7 +12,7 @@
 
 #include "pipex_bonus.h"
 
-void	b_check_arg(t_pipex *ppx, char **av, int ac)
+void	b_check_arg(t_pipex *ppx, int ac, char **av)
 {
 	if (ac < 5)
 		b_error_msg(ERR_ARG, 1);
