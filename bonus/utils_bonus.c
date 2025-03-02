@@ -6,7 +6,7 @@
 /*   By: gbodur <gbodur@student.42istanbul.com.t    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 17:25:26 by gbodur            #+#    #+#             */
-/*   Updated: 2025/03/01 04:14:49 by gbodur           ###   ########.fr       */
+/*   Updated: 2025/03/03 01:03:06 by gbodur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,49 +46,47 @@ char	*find_cmd_path(t_pipex *ppx, char **envp)
 	return (ft_free(ppx->full_path), ppx->full_path = NULL, NULL);
 }
 
-void b_setup_cmd_exec(t_pipex *ppx, char **av, char **env, int cmd_i)
+void	b_setup_cmd_exec(t_pipex *ppx, char **av, char **env, int cmd_i)
 {
-    ppx->cmd_path[cmd_i] = find_cmd_path(ppx, env);
-    if (!ppx->cmd_path[cmd_i])
-    {
-        ft_putstr_fd(av[cmd_i + 2 + ppx->heredoc_mode], 2);
-        b_error_msg(ERR_CMD, 1);
-    }    
-    if (cmd_i == ppx->cmd_count - 1)
-    {
-        if (dup2(ppx->fd1, 1) == -1)
-            b_error_msg(ERR_DUP, 1);
-        close(ppx->fd1);
-    }
-    if (execve(ppx->cmd_path[cmd_i], ppx->cmd, env) == -1)
-    {
-        free_list(ppx);
-        b_error_msg(ERR_EXEC, 1);
-    }
+	ppx->cmd_path[cmd_i] = find_cmd_path(ppx, env);
+	if (!ppx->cmd_path[cmd_i])
+	{
+		ft_putstr_fd(av[cmd_i + 2 + ppx->heredoc_mode], 2);
+		b_error_msg(ERR_CMD, 127);
+	}
+	if (cmd_i == ppx->cmd_count - 1)
+	{
+		if (dup2(ppx->fd1, 1) == -1)
+			b_error_msg(ERR_DUP, 1);
+		close(ppx->fd1);
+	}
+	if (execve(ppx->cmd_path[cmd_i], ppx->cmd, env) == -1)
+	{
+		free_list(ppx);
+		b_error_msg(ERR_EXEC, 126);
+	}
 }
 
 void	process_heredoc(t_pipex *ppx, char **av)
 {
 	char	*line;
-	size_t	delimiter_len;
 
-	delimiter_len = ft_strlen(av[2]);
 	if (pipe(ppx->heredoc_fd) == -1)
 		b_error_msg(ERR_PIPE, 1);
 	while (1)
-    {
-        write(1, "heredoc>", 9);
-        line = get_next_line(0);
-        if (!line)
-            break;
-        if (!ft_strncmp(line, av[2], delimiter_len))
-        {
-            free(line);
-            break;
-        }
-        write(ppx->heredoc_fd[1], line, ft_strlen(line));
-        free(line);
-    }
+	{
+		write(1, "heredoc>", 9);
+		line = get_next_line(0);
+		if (!line)
+			break ;
+		if (!ft_strncmp(line, av[2], ft_strlen(av[2])))
+		{
+			free(line);
+			break ;
+		}
+		write(ppx->heredoc_fd[1], line, ft_strlen(line));
+		free(line);
+	}
 	close(ppx->heredoc_fd[1]);
 	if (dup2(ppx->heredoc_fd[0], 0) == -1)
 		b_error_msg(ERR_DUP, 1);

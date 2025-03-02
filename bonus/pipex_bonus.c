@@ -6,7 +6,7 @@
 /*   By: gbodur <gbodur@student.42istanbul.com.t    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/09 16:28:56 by gbodur            #+#    #+#             */
-/*   Updated: 2025/03/01 04:17:32 by gbodur           ###   ########.fr       */
+/*   Updated: 2025/03/03 01:02:48 by gbodur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,13 @@
 void	b_check_arg(t_pipex *ppx, int ac, char **av)
 {
 	if (ac < 5)
-		b_error_msg(ERR_ARG, 1);
+		b_error_msg(ERR_ARG, 2);
 	if (ft_strncmp(av[1], "here_doc", 8) == 0)
 		ppx->heredoc_mode = 1;
 	if (ac < 6 && ppx->heredoc_mode == 1)
-		b_error_msg(ERR_ARG, 1);
+		b_error_msg(ERR_ARG, 2);
 }
+
 void	b_child_process(t_pipex *ppx, char **av, char **env, int i)
 {
 	int	cmd_i;
@@ -53,8 +54,8 @@ void	create_fork_process(t_pipex *ppx, char **av, char **env, int i)
 	ppx->pid = fork();
 	if (ppx->pid < 0)
 		b_error_msg(ERR_FORK, 1);
-    else if (ppx->pid == 0)
-        b_child_process(ppx, av, env, i);
+	else if (ppx->pid == 0)
+		b_child_process(ppx, av, env, i);
 }
 
 void	init_pipeline(t_pipex *ppx, char **av, int ac)
@@ -77,7 +78,7 @@ void	init_pipeline(t_pipex *ppx, char **av, int ac)
 		i++;
 	}
 	if (!ppx->cmd_path)
-		b_error_msg(ERR_CMD, 1);
+		b_error_msg(ERR_CMD, 127);
 	i = 0;
 	while (i < (ppx->cmd_count * 2))
 		ppx->cmd_path[i++] = NULL;
@@ -90,8 +91,8 @@ int	main(int ac, char **av, char **env)
 	int		i;
 
 	ppx.cmd_path = NULL;
-    ppx.full_path = NULL;
-    ppx.cmd = NULL;
+	ppx.full_path = NULL;
+	ppx.cmd = NULL;
 	ppx.pipe_fd = NULL;
 	ppx.heredoc_mode = 0;
 	b_check_arg(&ppx, ac, av);

@@ -36,6 +36,6 @@ fclean: clean
 re: fclean all bonus
 
 rmfile: clean
-	$(RM) infile outfile output
+	$(RM) infile outfile
 
 .PHONY: all clean fclean re rmfile

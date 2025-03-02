@@ -6,7 +6,7 @@
 /*   By: gbodur <gbodur@student.42istanbul.com.t    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 15:42:29 by gbodur            #+#    #+#             */
-/*   Updated: 2025/02/15 03:36:06 by gbodur           ###   ########.fr       */
+/*   Updated: 2025/03/03 01:01:46 by gbodur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,11 +83,11 @@ char	*ft_delete_read(char *keep)
 	j = 0;
 	while (keep[i] != '\0' && keep[i] != '\n')
 		i++;
-	if (!keep[i])
+	if (!keep[i] || !keep[i + 1])
 		return (free(keep), NULL);
 	rtn = malloc(sizeof(char) * (ft_strlen(keep) - i));
 	if (!rtn)
-		return (NULL);
+		return (free(keep), NULL);
 	i++;
 	while (keep[i + j] != '\0')
 	{
@@ -95,7 +95,8 @@ char	*ft_delete_read(char *keep)
 		j++;
 	}
 	rtn[j] = '\0';
-	return (free(keep), rtn);
+	free(keep);
+	return (rtn);
 }
 
 char	*get_next_line(int fd)

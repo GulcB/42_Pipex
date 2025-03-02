@@ -6,7 +6,7 @@
 /*   By: gbodur <gbodur@student.42istanbul.com.t    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/10 16:33:17 by gbodur            #+#    #+#             */
-/*   Updated: 2025/02/19 16:45:39 by gbodur           ###   ########.fr       */
+/*   Updated: 2025/03/03 01:01:12 by gbodur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,9 @@ void	fork_pipex(t_pipex *ppx, char **av, char **envp)
 char	*get_cmd_path(t_pipex *ppx, char **envp)
 {
 	int		i;
-	char	*dir;
-	char	*cmd_path;
 
-	if (ppx->cmd[0][0] == '/' && access(ppx->cmd[0], F_OK | X_OK) == 0)
+	if ((ppx->cmd[0][0] == '/' || ppx->cmd[0][0] == '.')
+			&& access(ppx->cmd[0], F_OK) == 0)
 		return (ft_strdup(ppx->cmd[0]));
 	while (envp && *envp && ft_strncmp("PATH=", *envp, 5))
 		envp++;
@@ -59,12 +58,12 @@ char	*get_cmd_path(t_pipex *ppx, char **envp)
 	i = -1;
 	while (ppx->full_path && ppx->full_path[++i])
 	{
-		dir = ft_strjoin(ppx->full_path[i], "/");
-		cmd_path = ft_strjoin(dir, ppx->cmd[0]);
-		free(dir);
-		if (access(cmd_path, F_OK | X_OK) == 0)
-			return (cmd_path);
-		free(cmd_path);
+		ppx->dir = ft_strjoin(ppx->full_path[i], "/");
+		ppx->cmd_path = ft_strjoin(ppx->dir, ppx->cmd[0]);
+		free(ppx->dir);
+		if (access(ppx->cmd_path, F_OK | X_OK) == 0)
+			return (ppx->cmd_path);
+		free(ppx->cmd_path);
 	}
 	return (ft_free(ppx->full_path), NULL);
 }
@@ -95,7 +94,7 @@ void	child_process(t_pipex *ppx, char **av, char **envp)
 	}
 	execve(ppx->path, ppx->cmd, envp);
 	free_src(ppx);
-	error_msg(ERR_EXEC, 1);
+	error_msg(ERR_EXEC, 126);
 }
 
 void	parent_process(t_pipex *ppx, char **av, char **envp)
@@ -124,7 +123,7 @@ void	parent_process(t_pipex *ppx, char **av, char **envp)
 	}
 	execve(ppx->path, ppx->cmd, envp);
 	free_src(ppx);
-	error_msg(ERR_EXEC, 1);
+	error_msg(ERR_EXEC, 126);
 }
 
 int	main(int ac, char **av, char **envp)
@@ -137,7 +136,7 @@ int	main(int ac, char **av, char **envp)
 	ppx.fd0 = -1;
 	ppx.fd1 = -1;
 	if (ac != 5)
-		error_msg(ERR_ARG, 1);
+		error_msg(ERR_ARG, 2);
 	if (pipe(ppx.fd) == -1)
 		error_msg(ERR_PIPE, 1);
 	fork_pipex(&ppx, av, envp);

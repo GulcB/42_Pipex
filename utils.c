@@ -6,7 +6,7 @@
 /*   By: gbodur <gbodur@student.42istanbul.com.t    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/12 13:46:14 by gbodur            #+#    #+#             */
-/*   Updated: 2025/02/19 16:45:00 by gbodur           ###   ########.fr       */
+/*   Updated: 2025/03/03 01:00:21 by gbodur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	close_pipes(t_pipex *ppx)
 void	error_msg(char *err_msg, int exit_code)
 {
 	perror(err_msg);
-	exit (exit_code);
+	exit(exit_code);
 }
 
 void	ft_free(char **var)
@@ -63,8 +63,5 @@ void	free_src(t_pipex *ppx)
 		ppx->path = NULL;
 	}
 	if (ppx->full_path)
-	{
-		ft_free(ppx->full_path);
 		ppx->full_path = NULL;
-	}
 }

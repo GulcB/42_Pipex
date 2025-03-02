@@ -8,8 +8,13 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
+<<<<<<< HEAD
       "cwd": "/workspaces/42_Pipex",
       "program": "/workspaces/42_Pipex/build/Debug/outDebug",
+=======
+      "cwd": "/home/gbodur/Desktop/pipex",
+      "program": "/home/gbodur/Desktop/pipex/build/Debug/outDebug",
+>>>>>>> 5012ce1 (all errors are handled and project done)
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

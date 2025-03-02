@@ -6,7 +6,7 @@
 /*   By: gbodur <gbodur@student.42istanbul.com.t    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 18:55:55 by gbodur            #+#    #+#             */
-/*   Updated: 2025/02/19 15:38:06 by gbodur           ###   ########.fr       */
+/*   Updated: 2025/03/03 00:59:46 by gbodur           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,18 @@
 # define ERR_CMD "Command not found\n"
 # define ERR_FORK "Fork error.\n"
 # define ERR_EXEC "Exec format error.\n"
-# define ERR_INFILE "Input file error.\n"
-# define ERR_OUTFILE "Output file error.\n"
+# define ERR_INFILE "Input file error, no such file or directory.\n"
+# define ERR_OUTFILE "Output file error, no such file or directory.\n"
 # define ERR_DUP "Dup2 error.\n"
+# define ERR_PER "Permission denied.\n"
 
 typedef struct s_pipex
 {
 	int			fd[2];
 	int			fd0;
 	int			fd1;
+	char		*dir;
+	char		*cmd_path;
 	char		*path;
 	char		**full_path;
 	char		**cmd;
